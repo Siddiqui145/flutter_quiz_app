@@ -15,6 +15,11 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('Start Quiz!'),
         centerTitle: true,
       ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {}, 
+          child: Text('Start Quiz')),
+      ),
     );
   }
 }
