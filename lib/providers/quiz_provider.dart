@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:quiz_flow/models/question.dart';
-import 'package:quiz_flow/services/quiz_service.dart';
+import '../models/quiz.dart';
+import '../services/quiz_service.dart';
 
 final quizServiceProvider = Provider((ref) => QuizService());
 
-final quizQuestionsProvider = FutureProvider<List<Question>>((ref) {
+final quizProvider = FutureProvider<Quiz>((ref) {
   final quizService = ref.read(quizServiceProvider);
-  return quizService.fetchQuestions();
+  return quizService.fetchQuiz();
 });
 
 final currentQuestionIndexProvider = StateProvider<int>((ref) => 0);

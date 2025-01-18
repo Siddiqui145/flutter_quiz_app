@@ -1,25 +1,22 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:quiz_flow/models/question.dart';
+import '../models/quiz.dart';
 
 class QuizService {
-
   final String apiUrl = "https://api.jsonserve.com/Uw5CrX";
 
-  Future<List<Question>> fetchQuestions() async {
+  Future<Quiz> fetchQuiz() async {
     try {
       final response = await http.get(Uri.parse(apiUrl));
 
-      if(response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        return data.map((json) => Question.fromJson(json)).toList();
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        return Quiz.fromJson(data);
+      } else {
+        throw Exception('Failed to load data from server.');
       }
-      else {
-        throw Exception('Failed to load data');
-      }
-    }
-    catch (e) {
-      throw Exception('Error fetching data: $e');
+    } catch (e) {
+      throw Exception('Error fetching quiz: $e');
     }
   }
 }
