@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:quiz_flow/providers/quiz_provider.dart';
-import 'package:quiz_flow/screens/result_screen.dart';
+import '../providers/quiz_provider.dart';
+import '../widgets/question_card.dart';
+import '../widgets/option_button.dart';
+import 'result_screen.dart';
 
-class QuizScreen extends ConsumerWidget{
+class QuizScreen extends ConsumerWidget {
   const QuizScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final questions = ref.watch(quizQuestionsProvider);
+    final quiz = ref.watch(quizProvider);
 
-    return questions.when(
-      error: (err, stack) => Center(child: Text('Error loading questions'),), 
-      loading: () => Center(child: CircularProgressIndicator(),),
-      data: (questions) {
+    return quiz.when(
+      loading: () => Center(child: CircularProgressIndicator()),
+      error: (error, stack) {
+        return Center(
+          child: Text('Error loading quiz: $error'),
+        );
+      },
+      data: (quiz) {
         final currentIndex = ref.watch(currentQuestionIndexProvider);
         final isCompleted = ref.watch(isQuizCompletedProvider);
 
@@ -21,28 +27,36 @@ class QuizScreen extends ConsumerWidget{
           return ResultScreen();
         }
 
+        final currentQuestion = quiz.questions[currentIndex];
+
         return Scaffold(
           appBar: AppBar(
-            title: Text('Quiz'),
+            title: Text(quiz.title),
           ),
           body: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(questions[currentIndex].question),...questions[currentIndex].options.asMap().entries.map((entry) => ElevatedButton(onPressed: () {
-                final correctAnswerIndex = questions[currentIndex].correctAnswerIndex;
+              QuestionCard(questionText: currentQuestion.description),
+              ...currentQuestion.options.map(
+                (option) => OptionButton(
+                  text: option.description,
+                  onPressed: () {
+                    if (option.isCorrect) {
+                      ref.read(userScoreProvider.notifier).state++;
+                    }
 
-                if(entry.key == correctAnswerIndex) {
-                  ref.read(userScoreProvider.notifier).state++;
-                }
-                if (currentIndex + 1 < questions.length) {
-                  ref.read(currentQuestionIndexProvider.notifier).state++;
-                }
-                else{
-                  ref.read(isQuizCompletedProvider.notifier).state = true;
-                }
-              }, child: Text(entry.value)))
+                    if (currentIndex + 1 < quiz.questions.length) {
+                      ref.read(currentQuestionIndexProvider.notifier).state++;
+                    } else {
+                      ref.read(isQuizCompletedProvider.notifier).state = true;
+                    }
+                  },
+                ),
+              ),
             ],
           ),
         );
-      });
+      },
+    );
   }
 }
