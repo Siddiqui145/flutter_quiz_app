@@ -1,18 +1,20 @@
+import 'option.dart';
+
 class Question {
-  final String question;
-  final List<String> options;
-  final int correctAnswerIndex;
+  final String description;
+  final List<Option> options;
 
   Question({
-    required this.question,
+    required this.description,
     required this.options,
-    required this.correctAnswerIndex,
   });
 
   factory Question.fromJson(Map<String, dynamic> json) {
     return Question(
-      question: json['question'], 
-      options: List<String>.from(json['options']), 
-      correctAnswerIndex: json['correctAnswerIndex']);
+      description: json['description'] as String,
+      options: (json['options'] as List<dynamic>)
+          .map((option) => Option.fromJson(option))
+          .toList(),
+    );
   }
 }
