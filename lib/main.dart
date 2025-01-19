@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:quiz_flow/screens/home_screen.dart';
 
 void main() {
@@ -13,7 +14,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 29, 58, 145)),
+        primarySwatch: Colors.blue,
+        textTheme: GoogleFonts.latoTextTheme(),
         useMaterial3: true,
       ),
       home: const HomeScreen(),
