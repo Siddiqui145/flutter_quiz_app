@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/quiz_provider.dart';
 import '../widgets/question_card.dart';
@@ -32,10 +33,12 @@ class QuizScreen extends ConsumerWidget {
         return Scaffold(
           appBar: AppBar(
             title: Text(quiz.title),
+            backgroundColor: Colors.blue,
           ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const SizedBox(height: 25,),
               QuestionCard(questionText: currentQuestion.description),
               ...currentQuestion.options.map(
                 (option) => OptionButton(
@@ -52,9 +55,11 @@ class QuizScreen extends ConsumerWidget {
                     }
                   },
                 ),
-              ),
+              )
             ],
-          ),
+          ).animate().slide(
+            duration: 2.seconds
+          )
         );
       },
     );
